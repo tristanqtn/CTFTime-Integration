@@ -62,8 +62,8 @@ To use this program, follow these steps:
 1. Clone the repo:
 
 ```shell
-git clone
-cd
+git clone https://github.com/tristanqtn/CTFTime-Integration.git
+cd CTFTime-Integration
 ```
 
 2. Install required dependencies using Poetry (Poetry will automatically create the venv to run the solution):
