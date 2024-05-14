@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "ctftime-api-integration"
+version = "0.1.0"
+description = "This project aims to exploit the CTFTime API in order to stay up to date on the upcoming CTF."
+authors = ["Tristan <tristan.querton@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+datetime = "^5.5"
+pandas = "^2.2.2"
+openpyxl = "^3.1.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
