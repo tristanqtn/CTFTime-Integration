@@ -46,12 +46,21 @@ This function takes three arguments:
 
 The function first extracts the organizer name from the organizer dictionary and stores it in a new column. It then computes the total duration of the event in hours and stores it in a new column. The function removes all onsite events and keeps only those events where the restrictions are in the specified restriction_list. It then adds a boolean column for each restriction in the restriction_list, indicating whether the event has that restriction. The function drops the useless columns specified in useless_columns and renames the id column to ctftime_id. The cleaned and processed DataFrame is then returned.
 
-### `save_2_xl(events_df, artifact_location)`
+### `find_new_ctfs(events_df, file_path)`
+
+This function takes two arguments:
+
+- `events_df`: The DataFrame containing the event data.
+- `file_path`: The list of allowed restrictions for the events.
+
+The goal here is to determine if an event has already been stored in the Excel or if the event retrieved isn't saved in Excel. This function should be used to alert user on the upcoming CTFs they don't already know.
+
+### `save_2_xl(events_df, file_path)`
 
 This function takes two arguments:
 
 - `events_df`: The cleaned and processed DataFrame containing the event data.
-- `artifact_location`: The file path of the Excel file to save the data to.
+- `file_path`: The file path of the Excel file to save the data to.
 
 The function saves the DataFrame to the specified Excel file using the to_excel() method.
 
@@ -86,6 +95,10 @@ poetry run .\ctftime_integration\main.py
 ```
 
 The program will retrieve the event data from the CTFtime API, clean and process the data, and save it to the specified Excel file.
+
+## License & Contribution
+
+This project is licensed under the MIT License - see the [LICENSE.md](./LICENSE) file for details. Contribution to the project is opened and encouraged.
 
 ## Conclusion
 
