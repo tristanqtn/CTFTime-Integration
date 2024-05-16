@@ -112,3 +112,32 @@ def save_2_xl(events_df, file_path):
     """
     # Save DataFrame to Excel file
     events_df.to_excel(file_path, index=False)
+    
+def get_ctf_delta(artifact_location, days, restriction_list, useless_columns):
+    """
+    Retrieves the new upcoming CTF events not present in the Excel file and add them to the Excel.
+    
+    Args:
+        artifact_location (str): The partial location of the Excel file (relative to the main).
+        days (int): The number of days in the future to retrieve events for.
+        restriction_list (list): The list of allowed restrictions for the events.
+        useless_columns (list): The list of columns to drop from the DataFrame.
+    
+    Returns:
+        A DF containing the new CTF events that were not present in the Excel file.
+    """
+    
+    # Get current working directory
+    cwd = os.getcwd()
+    # Concatenate the final file path
+    file_path = cwd+artifact_location
+
+    events = get_future_events(day_limit=days)
+    events_df = clean_events(events=events, restriction_list=restriction_list, useless_columns=useless_columns)    
+    new_events = find_new_ctfs(events_df=events_df, file_path=file_path)
+    save_2_xl(events_df=events_df, file_path=file_path)
+
+    if new_events.shape[0] == 0:
+        return "You have already found all the interesting CTFs for the given time period."
+    else:
+        return new_events
