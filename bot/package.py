@@ -2,7 +2,6 @@ import http.client
 import datetime
 import json
 import pandas as pd
-import os
 
 ########################################################################################
 # CTF Events
@@ -98,71 +97,6 @@ def clean_events(events, restriction_list, useless_columns):
     return events_df
 
 
-def find_new_ctfs(events_df, file_path):
-    """
-    Loads previously found CTFs from Excel file and compares with recently retrieved CTFs.
-
-    Args:
-        events_df (pandas.DataFrame): The cleaned and processed DataFrame containing the fresh event data.
-        file_path (str): The file path to load the Excel file.
-
-    Returns:
-        new_events (pandas.DataFrame): A DataFrame containing the new CTFs that were not present in the Excel file.
-    """
-    existing_events = pd.read_excel(file_path)
-    # Find the unregistered events
-    new_events = events_df[~events_df["ctftime_id"].isin(existing_events["ctftime_id"])]
-    return new_events
-
-
-def save_2_xl(events_df, file_path):
-    """
-    Saves the cleaned and processed event data to an Excel file.
-
-    Args:
-        events_df (pandas.DataFrame): The cleaned and processed DataFrame containing the event data.
-        file_path (str): The file path to save the Excel file to.
-    """
-    # Save DataFrame to Excel file
-    events_df.to_excel(file_path, index=False)
-
-
-def get_ctf_delta(artifact_location, days, restriction_list, useless_columns):
-    """
-    Retrieves the new upcoming CTF events not present in the Excel file and add them to the Excel.
-
-    Args:
-        artifact_location (str): The partial location of the Excel file (relative to the main).
-        days (int): The number of days in the future to retrieve events for.
-        restriction_list (list): The list of allowed restrictions for the events.
-        useless_columns (list): The list of columns to drop from the DataFrame.
-
-    Returns:
-        A DF containing the new CTF events that were not present in the Excel file.
-    """
-
-    # Get current working directory
-    cwd = os.getcwd()
-    # Concatenate the final file path
-    file_path = cwd + artifact_location
-
-    events = get_future_events(day_limit=days)
-    events_df = clean_events(
-        events=events,
-        restriction_list=restriction_list,
-        useless_columns=useless_columns,
-    )
-    new_events = find_new_ctfs(events_df=events_df, file_path=file_path)
-    save_2_xl(events_df=events_df, file_path=file_path)
-
-    if new_events.shape[0] == 0:
-        return (
-            "You have already found all the interesting CTFs for the given time period."
-        )
-    else:
-        return new_events
-
-
 ########################################################################################
 # Top Teams
 ########################################################################################
@@ -199,7 +133,7 @@ def get_top_teams():
     return json.loads(data)
 
 
-def parse_top_teams(top_teams):
+def parse_top_teams(top_teams, year):
     """
     Parse the JSON string containing the information of the top teams into a list of Team objects.
 
@@ -209,19 +143,14 @@ def parse_top_teams(top_teams):
     Returns:
         - A dataframe containing the top teams.
     """
-
-    # Obtain current year:
-    now = datetime.datetime.now()
-    current_year = now.year
-
     # Creates a dictionary from the JSON string
-    content = top_teams.get(str(current_year), None)
+    content = top_teams.get(str(year), None)
 
     # Transform to df and return it
     return pd.DataFrame(content)
 
 
-def get_top_10_teams():
+def get_top_10_teams(year):
     """
     Get the top 10 teams.
 
@@ -230,7 +159,7 @@ def get_top_10_teams():
     """
 
     top_teams = get_top_teams()
-    return parse_top_teams(top_teams)
+    return parse_top_teams(top_teams, year)
 
 
 ########################################################################################

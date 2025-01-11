@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  bot:
+    build:
+      context: .
+    image: bot
+    restart: always
+    environment:
+      # never add "" to the values
+      - DISCORD_TOKEN=
+      - CHANNEL_ID=
+      - ENV=prod
